@@ -2,10 +2,10 @@
 @import "fonts/clear-sans.css";
 
 $field-width: 500px;
-$grid-spacing: 15px;
+$grid-spacing: 4px;
 $grid-row-cells: 4;
 $tile-size: ($field-width - $grid-spacing * ($grid-row-cells + 1)) / $grid-row-cells;
-$tile-border-radius: 3px;
+$tile-border-radius: 0px;
 
 $mobile-threshold: $field-width + 20px;
 
@@ -270,12 +270,20 @@ hr {
     margin-right: $grid-spacing;
     float: left;
 
-    border-radius: $tile-border-radius;
-
-    background: rgba($tile-color, .35);
+    background-image: url('bg2.png');
 
     &:last-child {
       margin-right: 0;
+    }
+  }
+
+  @for $x from 1 through $grid-row-cells {
+    @for $y from 1 through $grid-row-cells {
+      .grid-cell-position-#{$x}-#{$y} {
+        $xPos: floor(($tile-size + $grid-spacing) * ($x - 1));
+        $yPos: floor(($tile-size + $grid-spacing) * ($y - 1));
+        background-position: (-$xPos) (-$yPos);
+      }
     }
   }
 
@@ -298,6 +306,10 @@ hr {
           $xPos: floor(($tile-size + $grid-spacing) * ($x - 1));
           $yPos: floor(($tile-size + $grid-spacing) * ($y - 1));
           @include transform(translate($xPos, $yPos));
+
+          .tile-inner {
+            background-position: (-$xPos) (-$yPos);
+          }
         }
       }
     }
@@ -311,15 +323,22 @@ hr {
   position: absolute; // Makes transforms relative to the top-left corner
 
   .tile-inner {
-    border-radius: $tile-border-radius;
-
-    background: $tile-color;
+    background-color: $tile-color;
     text-align: center;
     font-weight: bold;
     z-index: 10;
 
     font-size: 55px;
+    color: rgba(0, 0, 0, 0.6);
+    @include transition($transition-speed ease-in-out);
+    -webkit-transition-property: background-position;
+    -moz-transition-property: background-position;
+    transition-property: background-position;
   }
+  .tile-inner:hover {
+    color: rgba(0, 0, 0, 0.1);
+  }
+
 
   // Movement transition
   @include transition($transition-speed ease-in-out);
@@ -331,51 +350,13 @@ hr {
   $exponent: 1;
   $limit: 11;
 
-  // Colors for all 11 states, false = no special color
-  $special-colors: false false, // 2
-                   false false, // 4
-                   #f78e48 true, // 8
-                   #fc5e2e true, // 16
-                   #ff3333 true, // 32
-                   #ff0000 true, // 64
-                   false true, // 128
-                   false true, // 256
-                   false true, // 512
-                   false true, // 1024
-                   false true; // 2048
-
   // Build tile colors
   @while $exponent <= $limit {
     $power: pow($base, $exponent);
 
     &.tile-#{$power} .tile-inner {
-      // Calculate base background color
-      $gold-percent: ($exponent - 1) / ($limit - 1) * 100;
-      $mixed-background: mix($tile-gold-color, $tile-color, $gold-percent);
-
-      $nth-color: nth($special-colors, $exponent);
-
-      $special-background: nth($nth-color, 1);
-      $bright-color: nth($nth-color, 2);
-
-      @if $special-background {
-        $mixed-background: mix($special-background, $mixed-background, 55%);
-      }
-
-      @if $bright-color {
-        color: $bright-text-color;
-      }
-
       // Set background
-      background: $mixed-background;
-
-      // Add glow
-      $glow-opacity: max($exponent - 4, 0) / ($limit - 4);
-
-      @if not $special-background {
-        box-shadow: 0 0 30px 10px rgba($tile-gold-glow-color, $glow-opacity / 1.8),
-                    inset 0 0 0 1px rgba(white, $glow-opacity / 3);
-      }
+      background-image: url('bg' + $power + '.png');
 
       // Adjust font size for bigger numbers
       @if $power >= 100 and $power < 1000 {
