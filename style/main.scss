@@ -292,7 +292,7 @@ hr {
   }
 
   .tile {
-    &, .tile-inner {
+    &, .tile-inner, .tile-inner-text {
       width: ceil($tile-size);
       height: ceil($tile-size);
       line-height: $tile-size + 10px;
@@ -328,16 +328,23 @@ hr {
     z-index: 10;
 
     font-size: 55px;
-    color: rgba(0, 0, 0, 0.6);
     @include transition($transition-speed ease-in-out);
     -webkit-transition-property: background-position;
     -moz-transition-property: background-position;
     transition-property: background-position;
   }
-  .tile-inner:hover {
-    color: rgba(0, 0, 0, 0.1);
+  .tile-inner-text {
+    color: rgb(0, 0, 0);
+    text-shadow: -2px -2px 0px rgb(255, 255, 255),
+                 -2px  2px 0px rgb(255, 255, 255),
+                  2px -2px 0px rgb(255, 255, 255),
+                  2px  2px 0px rgb(255, 255, 255);
+    opacity: 0.6;
   }
 
+  .tile-inner-text:hover {
+    opacity: 0.1;
+  }
 
   // Movement transition
   @include transition($transition-speed ease-in-out);
