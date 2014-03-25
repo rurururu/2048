@@ -387,7 +387,7 @@ hr {
   // Super tiles (above 2048)
   &.tile-super .tile-inner {
     color: $bright-text-color;
-    background: mix(#333, $tile-gold-color, 95%);
+    background-image: url('bgsuper.png');
 
     font-size: 30px;
 
